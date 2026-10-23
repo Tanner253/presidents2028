@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
-// Static export: `npm run build` writes a plain site to /out that any static host can serve.
+// Pages are still prerendered as static HTML; the one exception is /api/stats, which reads the
+// crank's stats from MongoDB on Vercel.
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
   images: { unoptimized: true },
 };

@@ -2,7 +2,7 @@
   Voter Card (WC's Passport): a read-only leaderboard of every wallet on the 2028 rolls.
 
   The claim process publishes these files under VOTER_CARD.rosterUrl (default /data/roster/),
-  on the same cycle as stats.json, and stops updating them once the polls close:
+  on the same hourly cycle as the fee-engine stats, and stops updating them once the polls close:
 
   board-meta.json
     { "totalEntries": 9966, "pageCount": 200, "pageSize": 50 }
