@@ -1,0 +1,11 @@
+{
+  "totalBurned": 0,
+  "totalSolRouted": 0,
+  "solToBurn": 0,
+  "solToLp": 0,
+  "solToMarketing": 0,
+  "cycles": 0,
+  "lastCycleAt": null,
+  "nextCycleAt": null,
+  "cycleIntervalMs": 3600000
+}
