@@ -22,7 +22,7 @@ Live: https://president2028.vercel.app
 | Coin price, market cap, volume, 24h change | DexScreener public API, in the browser, every 60s |
 | Win odds | Polymarket "Presidential Election Winner 2028" market (gamma `/markets/keyset`), every 5 min |
 | Party odds ("Race to 270", chyron) | Polymarket "Which party wins 2028" market, ids in `SITE.partyMarkets` |
-| Burned, SOL routed, cycle times, holder counts | `stats.json`, written by your internal claim process |
+| Burned, SOL routed, cycle times, holder counts, burn log | MongoDB, written hourly by the crank (private repo `presidents2028-crank`), served by this site's read-only `/api/stats` route |
 | Voter Card | `board-meta.json` + `board-{n}.json`, written by your internal claim process |
 
 ## Launch checklist
@@ -31,11 +31,13 @@ Live: https://president2028.vercel.app
 2. **Candidate coins:** paste each contract address into that candidate's `mint` in `src/config/candidates.ts`. Until a coin has one, its card says "Soon".
 3. **Socials:** fill in `socials` in `src/config/site.ts`; empty links stay hidden.
 4. **Giveaway (optional):** set `BALLOT.prize` in `src/config/site.ts` to show winners × SOL and rules on the ballot. Edit or remove the home `ANNOUNCEMENT` band there too.
-5. **Deploy:** `vercel --prod`.
+5. **Database:** add `MONGODB_URI` (the full MongoDB connection string; a read-only user is safest) to the Vercel project's Production environment variables.
+6. **Demo off:** `vercel env rm NEXT_PUBLIC_DEMO production`.
+7. **Deploy:** `vercel --prod`.
 
-## stats.json (fee engine)
+## Fee-engine stats (MongoDB)
 
-Your claim process publishes this after every cycle:
+The crank saves this as one document (`_id: "current"`) in the `stats` collection of the `president2028` database after every cycle. `/api/stats` returns it, cached for a minute at Vercel's edge, so the database sees about one read a minute:
 
 ```json
 {
@@ -58,11 +60,7 @@ Your claim process publishes this after every cycle:
 - `totalBurned` is in $PRESIDENT tokens; the SOL fields are in SOL; times are ISO strings.
 - `holders` is optional. When it's present, holder counts appear on the $PRESIDENT page, the candidates board and the coin cards.
 - Until `nextCycleAt` is set, the site shows "Burns start at launch" instead of a countdown.
-
-There are two ways to publish it:
-
-- **Easiest:** host the JSON wherever the claim process runs (any URL that sends `Access-Control-Allow-Origin: *`), then point `statsUrl` in `src/config/site.ts` at it. New numbers show up within a minute, with no redeploy.
-- **No extra hosting:** overwrite `public/data/stats.json` and run `vercel --prod`.
+- `/api/stats` returns `503` when `MONGODB_URI` isn't set and `404` before the crank's first live cycle; the site shows those as "starts at launch" / "—".
 
 ## Voter Card files
 

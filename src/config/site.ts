@@ -15,8 +15,8 @@ export const SITE = {
     { label: "TikTok", href: "" },
     { label: "Instagram", href: "" },
   ],
-  // Written by the internal claim process; see README.
-  statsUrl: "/data/stats.json",
+  // The crank's stats, served from MongoDB by the site's own read-only route (see README).
+  statsUrl: "/api/stats/",
   polymarketEvent: "https://polymarket.com/event/presidential-election-winner-2028",
   // Polymarket's "Which party wins 2028" market: market ids for the two parties' YES prices.
   partyEvent: "https://polymarket.com/event/which-party-wins-2028-us-presidential-election",
