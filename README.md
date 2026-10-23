@@ -21,6 +21,7 @@ Live: https://president2028.vercel.app
 | --- | --- |
 | Coin price, market cap, volume, 24h change | DexScreener public API, in the browser, every 60s |
 | Win odds | Polymarket "Presidential Election Winner 2028" market (gamma `/markets/keyset`), every 5 min |
+| Party odds ("Race to 270", chyron) | Polymarket "Which party wins 2028" market, ids in `SITE.partyMarkets` |
 | Burned, SOL routed, cycle times, holder counts | `stats.json`, written by your internal claim process |
 | Voter Card | `board-meta.json` + `board-{n}.json`, written by your internal claim process |
 

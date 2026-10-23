@@ -66,6 +66,7 @@ export default function Movers() {
             <TokenCard
               key={label}
               r={r}
+              fallback="board"
               banner={<div className={`border-b-[3px] border-cream px-4 py-2 font-narrow text-sm font-bold uppercase tracking-[0.24em] ${tone}`}>{label}</div>}
             />
           ))}

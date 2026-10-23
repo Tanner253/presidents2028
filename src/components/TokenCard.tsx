@@ -8,8 +8,19 @@ import { changeColor, fmtCompact, fmtDir, fmtOdds, fmtOddsDelta, fmtUsd, fmtUsdS
 import type { CandidateRow } from "@/lib/market-context";
 
 // WC-style coin card: party colour with the candidate's portrait full-bleed on the right.
-// Live coins show price + 24h; before launch the headline number is the Polymarket win odds.
-export default function TokenCard({ r, banner, id }: { r: CandidateRow; banner?: React.ReactNode; id?: string }) {
+// Live coins show price + 24h and link to pump.fun. Before launch the headline number is the
+// Polymarket win odds and the card links to that market (or to the board, with fallback="board").
+export default function TokenCard({
+  r,
+  banner,
+  id,
+  fallback = "polymarket",
+}: {
+  r: CandidateRow;
+  banner?: React.ReactNode;
+  id?: string;
+  fallback?: "polymarket" | "board";
+}) {
   const p = PARTIES[r.party];
   const photo = r.image ?? PHOTOS[r.id]?.src;
   const m = r.market;
@@ -76,11 +87,17 @@ export default function TokenCard({ r, banner, id }: { r: CandidateRow; banner?:
     out ? "opacity-60 grayscale hover:opacity-100 hover:grayscale-0" : ""
   }`;
 
-  return r.mint ? (
-    <a id={id} href={pumpUrl(r.mint)} target="_blank" rel="noopener noreferrer" aria-label={`${r.name}: buy $${r.ticker} on pump.fun`} className={cls}>
+  const external = (href: string, label: string, hint: string) => (
+    <a id={id} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`${cls} relative`}>
+      <span className="pointer-events-none absolute right-2 top-2 z-10 border-2 border-ink bg-gold px-1.5 py-0.5 font-narrow text-[11px] font-bold uppercase tracking-[0.14em] text-ink opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+        {hint} ↗
+      </span>
       {body}
     </a>
-  ) : (
+  );
+  if (r.mint) return external(pumpUrl(r.mint), `${r.name}: buy $${r.ticker} on pump.fun`, "Buy on pump.fun");
+  if (fallback === "polymarket") return external(r.pmUrl, `${r.name}: win odds on Polymarket`, "Odds on Polymarket");
+  return (
     <Link id={id} href={`/candidates/#${r.id}`} aria-label={`${r.name} on the candidates board`} className={cls}>
       {body}
     </Link>

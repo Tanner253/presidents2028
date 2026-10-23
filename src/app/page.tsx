@@ -4,14 +4,16 @@ import FrontrunnerRace from "@/components/home/FrontrunnerRace";
 import Hero from "@/components/home/Hero";
 import Movers from "@/components/home/Movers";
 import Pairing from "@/components/home/Pairing";
-import TickerTape from "@/components/home/TickerTape";
+import Chyron from "@/components/home/Chyron";
+import RaceTo270 from "@/components/home/RaceTo270";
 
 export default function Home() {
   return (
     <>
       <Hero />
       <BuyBand />
-      <TickerTape />
+      <Chyron />
+      <RaceTo270 />
       <EngineSteps />
       <Pairing />
       <Announcement />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PARTIES, isAlive } from "@/config/candidates";
 import { BALLOT, SITE } from "@/config/site";
 import { fmtOdds } from "@/lib/format";
@@ -9,6 +9,7 @@ import { EMPTY_BALLOT, ballotCandidate, cleanBallot, decodeBallot, encodeBallot,
 import Avatar from "../Avatar";
 import { IconX } from "../icons";
 import Seal from "../Seal";
+import { Sticker, VotedCelebration } from "./VotedSticker";
 
 const DRAFT_KEY = "p28-ballot-v1";
 type Slot = keyof B;
@@ -24,6 +25,8 @@ export default function Ballot() {
   const [shared, setShared] = useState<B | null>(null);
   const [picking, setPicking] = useState<Slot | null>(null);
   const [copied, setCopied] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
+  const endCelebration = useCallback(() => setCelebrate(false), []);
 
   useEffect(() => {
     setShared(decodeBallot(new URLSearchParams(window.location.search).get("b")));
@@ -34,6 +37,8 @@ export default function Ballot() {
 
   const update = (next: B) => {
     const b = cleanBallot(next);
+    // Celebrate the moment a ballot becomes complete, not when a saved one loads.
+    if (!(ballot.R && ballot.D && ballot.P) && b.R && b.D && b.P) setCelebrate(true);
     setBallot(b);
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(b));
@@ -161,10 +166,15 @@ export default function Ballot() {
       </div>
 
       {complete && president && !shared && (
-        <p className="mt-6 text-center font-slab text-[clamp(24px,4vw,40px)] uppercase leading-tight">
-          <span className="text-gold">{president.name}</span> takes the White House
-        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left">
+          <Sticker size={96} className="shrink-0 -rotate-6 drop-shadow-[4px_5px_0_rgba(0,0,0,0.45)]" />
+          <p className="font-slab text-[clamp(24px,4vw,40px)] uppercase leading-tight">
+            <span className="text-gold">{president.name}</span> takes the White House
+          </p>
+        </div>
       )}
+
+      {celebrate && <VotedCelebration onDone={endCelebration} />}
 
       {picking && <Picker slot={picking} ballot={ballot} onClose={() => setPicking(null)} onPick={(id) => update({ ...ballot, [picking]: id })} />}
     </div>

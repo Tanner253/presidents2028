@@ -34,6 +34,8 @@ export type Odds = {
   // Change in probability points (0–1 scale) over the last day / week, when Polymarket reports it.
   day: number | null;
   week: number | null;
+  // Market slug, for linking to the market on polymarket.com.
+  slug: string | null;
 };
 
 type DexPair = {
@@ -136,14 +138,16 @@ export async function fetchOdds(ids: string[]) {
   if (!ids.length) return out;
   const res = await fetch(`${GAMMA_API}?limit=100&${ids.map((id) => `id=${id}`).join("&")}`);
   if (!res.ok) throw new Error(`polymarket ${res.status}`);
-  const body: { markets?: { id: string; outcomePrices?: string; oneDayPriceChange?: number; oneWeekPriceChange?: number }[] } =
-    await res.json();
+  const body: {
+    markets?: { id: string; slug?: string; outcomePrices?: string; oneDayPriceChange?: number; oneWeekPriceChange?: number }[];
+  } = await res.json();
   for (const m of body.markets ?? []) {
     let yes = NaN;
     try {
       yes = Number(JSON.parse(m.outcomePrices ?? "[]")[0]);
     } catch {}
-    if (Number.isFinite(yes)) out[m.id] = { p: yes, day: numOrNull(m.oneDayPriceChange), week: numOrNull(m.oneWeekPriceChange) };
+    if (Number.isFinite(yes))
+      out[m.id] = { p: yes, day: numOrNull(m.oneDayPriceChange), week: numOrNull(m.oneWeekPriceChange), slug: m.slug ?? null };
   }
   return out;
 }

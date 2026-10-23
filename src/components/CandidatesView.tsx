@@ -197,9 +197,9 @@ function Board({ rows, byMcap, ready }: { rows: Ranked[]; byMcap: boolean; ready
               {cells}
             </a>
           ) : (
-            <div key={r.id} id={r.id} className={cls} style={style}>
+            <a key={r.id} id={r.id} href={r.pmUrl} target="_blank" rel="noopener noreferrer" aria-label={`${r.name}: win odds on Polymarket`} className={cls} style={style}>
               {cells}
-            </div>
+            </a>
           );
         })}
       </div>

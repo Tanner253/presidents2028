@@ -18,6 +18,9 @@ export const SITE = {
   // Written by the internal claim process; see README.
   statsUrl: "/data/stats.json",
   polymarketEvent: "https://polymarket.com/event/presidential-election-winner-2028",
+  // Polymarket's "Which party wins 2028" market: market ids for the two parties' YES prices.
+  partyEvent: "https://polymarket.com/event/which-party-wins-2028-us-presidential-election",
+  partyMarkets: { R: "565064", D: "565065" },
   marketRefreshMs: 60_000,
   oddsRefreshMs: 300_000,
 };

@@ -49,7 +49,11 @@ const ENTRIES = [
   { key: MAIN_KEY, mint: SITE.mainMint },
   ...CANDIDATES.map((c) => ({ key: c.id, mint: c.mint })),
 ];
-const ODDS_IDS = CANDIDATES.flatMap((c) => (c.polymarketId ? [c.polymarketId] : []));
+const ODDS_IDS = [
+  ...CANDIDATES.flatMap((c) => (c.polymarketId ? [c.polymarketId] : [])),
+  SITE.partyMarkets.R,
+  SITE.partyMarkets.D,
+];
 
 // True once at least one coin (main or candidate) has a contract address.
 export const ANY_LIVE = ENTRIES.some((e) => e.mint);
@@ -120,6 +124,8 @@ export type CandidateRow = Candidate & {
   oddsDay: number | null;
   oddsWeek: number | null;
   holders: Holders | null;
+  // This candidate's market on polymarket.com (or the event page until the slug loads).
+  pmUrl: string;
 };
 
 export function useCandidateRows(): CandidateRow[] {
@@ -135,8 +141,15 @@ export function useCandidateRows(): CandidateRow[] {
           oddsDay: o?.day ?? null,
           oddsWeek: o?.week ?? null,
           holders: holders[c.id] ?? null,
+          pmUrl: o?.slug ? `${SITE.polymarketEvent}/${o.slug}` : SITE.polymarketEvent,
         };
       }),
     [markets, odds, holders],
   );
+}
+
+// Polymarket's party-level odds (0–1) for the White House, null until loaded.
+export function usePartyOdds() {
+  const { odds } = useMarket();
+  return { R: odds[SITE.partyMarkets.R]?.p ?? null, D: odds[SITE.partyMarkets.D]?.p ?? null };
 }
