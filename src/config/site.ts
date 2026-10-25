@@ -4,7 +4,7 @@ import { CANDIDATES } from "./candidates";
 export const SITE = {
   name: "US President 2028",
   ticker: "PRESIDENT",
-  url: "https://president2028.vercel.app",
+  url: "https://www.president2028.fun",
   // Paste the $PRESIDENT contract address here once it's live on pump.fun.
   mainMint: "",
   totalSupply: 1_000_000_000,
