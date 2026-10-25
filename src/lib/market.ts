@@ -98,9 +98,44 @@ export async function fetchMarkets(entries: { key: string; mint: string }[]) {
       };
     }
   }
+  // DexScreener has no USD numbers for coins quoted in another token (candidates paired with
+  // $PRESIDENT on the bonding curve); Jupiter prices those, so fill them from there.
+  const unpriced = mints.filter((m) => !(out[byMint.get(m)!]?.priceUsd > 0));
+  for (let i = 0; i < unpriced.length; i += JUP_BATCH) {
+    try {
+      const res = await fetch(JUP_API + unpriced.slice(i, i + JUP_BATCH).join(","));
+      if (!res.ok) continue;
+      ok++;
+      const tokens: JupToken[] = await res.json();
+      for (const t of tokens) {
+        const key = byMint.get(t.id);
+        if (!key || !num(t.usdPrice)) continue;
+        out[key] = {
+          priceUsd: num(t.usdPrice),
+          change24h: num(t.stats24h?.priceChange),
+          volume24h: num(t.stats24h?.buyVolume) + num(t.stats24h?.sellVolume),
+          marketCap: num(t.mcap ?? t.fdv),
+          liquidityUsd: num(t.liquidity),
+        };
+      }
+    } catch {
+      // Keep whatever DexScreener gave.
+    }
+  }
   if (mints.length && !ok) throw new Error("DexScreener unavailable");
   return out;
 }
+
+const JUP_API = "https://lite-api.jup.ag/tokens/v2/search?query=";
+const JUP_BATCH = 50;
+type JupToken = {
+  id: string;
+  usdPrice?: number;
+  mcap?: number;
+  fdv?: number;
+  liquidity?: number;
+  stats24h?: { priceChange?: number; buyVolume?: number; sellVolume?: number };
+};
 
 export function normalizeStats(raw: unknown): EngineStats | null {
   if (!raw || typeof raw !== "object") return null;
