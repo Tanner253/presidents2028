@@ -50,7 +50,7 @@ export const CANDIDATES: Candidate[] = [
   { id: "warnock", name: "Raphael Warnock", ticker: "WARNOCK", party: "D", mint: "", status: "undeclared", polymarketId: "561280" },
   { id: "moore", name: "Wes Moore", ticker: "MOORE", party: "D", mint: "", status: "undeclared", polymarketId: "561235" },
   { id: "massie", name: "Thomas Massie", ticker: "MASSIE", party: "R", mint: "", status: "undeclared", polymarketId: "561260" },
-  { id: "khanna", name: "Ro Khanna", ticker: "KHANNA", party: "D", mint: "", status: "undeclared", polymarketId: "561259" },
+  { id: "khanna", name: "Ro Khanna", ticker: "KHANNA", party: "D", mint: "3P5qPgvJehB84dJxcJWR14kMBteeGG5A4VSfkG2opump", status: "undeclared", polymarketId: "561259" },
   { id: "pritzker", name: "JB Pritzker", ticker: "PRITZKER", party: "D", mint: "", status: "undeclared", polymarketId: "561241" },
   { id: "cruz", name: "Ted Cruz", ticker: "CRUZ", party: "R", mint: "", status: "undeclared", polymarketId: "561281" },
   { id: "ivanka", name: "Ivanka Trump", ticker: "IVANKA", party: "R", mint: "", status: "undeclared", polymarketId: "561255" },
