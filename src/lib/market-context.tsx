@@ -146,6 +146,7 @@ export function useCandidateRows(): CandidateRow[] {
         return {
           ...c,
           mint: mints.byId[c.id] ?? "",
+          ticker: mints.symbols[c.id] ?? c.ticker,
           market: markets[c.id] ?? null,
           odds: o?.p ?? null,
           oddsDay: o?.day ?? null,
