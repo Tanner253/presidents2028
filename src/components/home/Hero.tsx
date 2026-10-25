@@ -2,13 +2,13 @@
 
 import { SITE } from "@/config/site";
 import { fmtCompact, fmtNum, fmtUsd } from "@/lib/format";
-import { ANY_LIVE, useMarket } from "@/lib/market-context";
+import { useMarket } from "@/lib/market-context";
 import { splitDuration, useNow } from "@/lib/useNow";
 import { StatBlock, Wrap } from "../ui";
 import Scoreboard from "./Scoreboard";
 
 export default function Hero() {
-  const { markets, stats, loaded, statsFailed, marketsFailed } = useMarket();
+  const { markets, stats, mints, loaded, statsFailed, marketsFailed } = useMarket();
   const now = useNow();
   const caps = Object.values(markets).map((m) => m.marketCap);
   const days = now === null ? null : splitDuration(Date.parse(SITE.electionDay) - now).days;
@@ -18,7 +18,7 @@ export default function Hero() {
       <span className="sm:hidden">{fmtCompact(stats.totalBurned)}</span>
       <span className="hidden sm:inline">{fmtNum(stats.totalBurned)}</span>
     </>
-  ) : statsFailed && ANY_LIVE ? (
+  ) : statsFailed && mints.any ? (
     "—"
   ) : (
     "Starts at launch"

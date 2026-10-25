@@ -1,4 +1,7 @@
+"use client";
+
 import { SITE, pumpUrl } from "@/config/site";
+import { useMarket } from "@/lib/market-context";
 
 const SIZES = {
   sm: "border-2 px-3 py-2 text-[13px] shadow-brutal-sm",
@@ -7,7 +10,7 @@ const SIZES = {
 };
 
 export default function BuyButton({
-  mint = SITE.mainMint,
+  mint: mintProp,
   ticker = SITE.ticker,
   size = "lg",
   className = "",
@@ -17,6 +20,8 @@ export default function BuyButton({
   size?: keyof typeof SIZES;
   className?: string;
 }) {
+  const { mints } = useMarket();
+  const mint = mintProp ?? mints.main;
   const base = `inline-flex items-center justify-center gap-2 border-ink text-center uppercase ${
     size === "hero" ? "" : "font-narrow font-bold tracking-[0.12em]"
   } ${SIZES[size]} ${className}`;

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { CANDIDATES, type Candidate } from "@/config/candidates";
 import { SITE } from "@/config/site";
+import { CONFIG_MINTS, resolveMints, type Mints } from "./coins";
 import {
   DEMO,
   MAIN_KEY,
@@ -24,6 +25,8 @@ type MarketState = {
   // Keyed like markets (candidate id or MAIN_KEY), resolved from stats.holders by mint.
   holders: Record<string, Holders>;
   stats: EngineStats | null;
+  // Contract addresses: the config's, plus every coin the crank has found.
+  mints: Mints;
   // First load attempt finished (whether or not it succeeded).
   loaded: boolean;
   oddsLoaded: boolean;
@@ -37,6 +40,7 @@ const EMPTY: MarketState = {
   odds: {},
   holders: {},
   stats: null,
+  mints: CONFIG_MINTS,
   loaded: false,
   oddsLoaded: false,
   marketsFailed: false,
@@ -45,46 +49,51 @@ const EMPTY: MarketState = {
 
 const Ctx = createContext<MarketState>(EMPTY);
 
-const ENTRIES = [
-  { key: MAIN_KEY, mint: SITE.mainMint },
-  ...CANDIDATES.map((c) => ({ key: c.id, mint: c.mint })),
-];
+const entriesFor = (m: Mints) => [{ key: MAIN_KEY, mint: m.main }, ...CANDIDATES.map((c) => ({ key: c.id, mint: m.byId[c.id] ?? "" }))];
 const ODDS_IDS = [
   ...CANDIDATES.flatMap((c) => (c.polymarketId ? [c.polymarketId] : [])),
   SITE.partyMarkets.R,
   SITE.partyMarkets.D,
 ];
 
-// True once at least one coin (main or candidate) has a contract address.
-export const ANY_LIVE = ENTRIES.some((e) => e.mint);
-
 export function MarketProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<MarketState>(EMPTY);
 
   useEffect(() => {
     let alive = true;
+    // Last good stats, kept if a refresh fails.
+    let lastStats: EngineStats | null = null;
     const loadMarkets = async () => {
       if (DEMO) {
-        const keys = ENTRIES.map((e) => e.key);
+        const keys = entriesFor(CONFIG_MINTS).map((e) => e.key);
         setState((s) => ({ ...s, markets: demoMarkets(keys), holders: demoHolders(keys), stats: demoStats(), loaded: true }));
         return;
       }
-      const [m, st] = await Promise.allSettled([fetchMarkets(ENTRIES), fetchStats(SITE.statsUrl)]);
+      // Stats first: they carry the coin list, which says which contract addresses to price.
+      const st = await fetchStats(SITE.statsUrl).then(
+        (v) => ({ ok: true, v }),
+        () => ({ ok: false, v: null }),
+      );
+      if (st.v) lastStats = st.v;
+      const mints = resolveMints(lastStats?.coins ?? []);
+      const entries = entriesFor(mints);
+      const m = await fetchMarkets(entries).then(
+        (v) => ({ ok: true, v }),
+        () => ({ ok: false, v: null }),
+      );
       if (!alive) return;
-      setState((s) => {
-        const stats = st.status === "fulfilled" && st.value ? st.value : s.stats;
-        const holders: Record<string, Holders> = {};
-        for (const e of ENTRIES) if (e.mint && stats?.holders[e.mint]) holders[e.key] = stats.holders[e.mint];
-        return {
-          ...s,
-          markets: m.status === "fulfilled" ? m.value : s.markets,
-          stats,
-          holders,
-          loaded: true,
-          marketsFailed: m.status === "rejected",
-          statsFailed: st.status === "rejected",
-        };
-      });
+      const holders: Record<string, Holders> = {};
+      for (const e of entries) if (e.mint && lastStats?.holders[e.mint]) holders[e.key] = lastStats.holders[e.mint];
+      setState((s) => ({
+        ...s,
+        markets: m.v ?? s.markets,
+        stats: lastStats,
+        mints,
+        holders,
+        loaded: true,
+        marketsFailed: !m.ok,
+        statsFailed: !st.ok,
+      }));
     };
     const loadOdds = async () => {
       const odds = await fetchOdds(ODDS_IDS).catch(() => null);
@@ -129,13 +138,14 @@ export type CandidateRow = Candidate & {
 };
 
 export function useCandidateRows(): CandidateRow[] {
-  const { markets, odds, holders } = useMarket();
+  const { markets, odds, holders, mints } = useMarket();
   return useMemo(
     () =>
       CANDIDATES.map((c) => {
         const o = c.polymarketId ? odds[c.polymarketId] : undefined;
         return {
           ...c,
+          mint: mints.byId[c.id] ?? "",
           market: markets[c.id] ?? null,
           odds: o?.p ?? null,
           oddsDay: o?.day ?? null,
@@ -144,7 +154,7 @@ export function useCandidateRows(): CandidateRow[] {
           pmUrl: o?.slug ? `${SITE.polymarketEvent}/${o.slug}` : SITE.polymarketEvent,
         };
       }),
-    [markets, odds, holders],
+    [markets, odds, holders, mints],
   );
 }
 

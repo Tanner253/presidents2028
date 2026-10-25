@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ENGINE_STEPS, SITE } from "@/config/site";
 import { fmtNum, fmtSol } from "@/lib/format";
-import { ANY_LIVE, useMarket } from "@/lib/market-context";
+import { useMarket } from "@/lib/market-context";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { CycleTimer } from "../Countdown";
 import SectionTitle from "../SectionTitle";
@@ -14,7 +14,7 @@ const COLORS = ["var(--color-sky)", "var(--color-red-hot)", "var(--color-gold)",
 
 // WC's ecosystem explainer: an auto-playing "broadcast" of the four steps of every fee cycle.
 export default function EngineSteps() {
-  const { stats } = useMarket();
+  const { stats, mints } = useMarket();
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -25,7 +25,7 @@ export default function EngineSteps() {
     return () => clearTimeout(t);
   }, [step, paused, reduced]);
 
-  const pre = !ANY_LIVE && !stats?.cycles;
+  const pre = !mints.any && !stats?.cycles;
   const live = [
     { label: "SOL claimed & routed", value: fmtSol(stats?.totalSolRouted) },
     { label: `$${SITE.ticker} burned`, value: fmtNum(stats?.totalBurned) },
