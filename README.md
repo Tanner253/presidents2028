@@ -2,7 +2,7 @@
 
 The World Cup on Pump format, remade for the 2028 presidential race: one pump.fun coin per candidate, all feeding the main $PRESIDENT coin.
 
-Live: https://president2028.vercel.app
+Live: https://www.president2028.fun
 
 ## Pages (and their World Cup equivalents)
 
