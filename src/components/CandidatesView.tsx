@@ -68,6 +68,7 @@ export default function CandidatesView() {
         variant="red"
         kicker={`${CANDIDATES.length} coins · one White House`}
         title="The Candidates"
+        titleClass="text-[clamp(40px,6.4vw,96px)]"
         subtitle={`${CANDIDATES.length} names on the board, ${alive} still in the race. Every coin feeds $${SITE.ticker}.`}
         aside={
           <div className="grid auto-rows-fr grid-cols-2 gap-3 md:w-[440px]">
