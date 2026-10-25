@@ -1,3 +1,5 @@
+import type { LaunchedCoin } from "./coins";
+
 export const MAIN_KEY = "__main";
 // Set in .env.development so `npm run dev` shows fake numbers; never set for production.
 export const DEMO = process.env.NEXT_PUBLIC_DEMO === "1";
@@ -26,6 +28,8 @@ export type EngineStats = {
   capturedAt: string | null;
   // Optional holder counts, keyed by mint.
   holders: Record<string, Holders>;
+  // Every coin the dev wallet launched, oldest first (see lib/coins.ts).
+  coins: LaunchedCoin[];
 };
 
 export type Odds = {
@@ -109,7 +113,16 @@ export function normalizeStats(raw: unknown): EngineStats | null {
     }
   }
   const interval = num(r.cycleIntervalMs, 3_600_000);
+  const coins: LaunchedCoin[] = [];
+  if (Array.isArray(r.coins)) {
+    for (const c of r.coins as Record<string, unknown>[]) {
+      if (typeof c?.mint !== "string" || !c.mint) continue;
+      const str = (v: unknown) => (typeof v === "string" ? v : "");
+      coins.push({ mint: c.mint, symbol: str(c.symbol), name: str(c.name), image: str(c.image) || null, main: c.main === true });
+    }
+  }
   return {
+    coins,
     totalBurned: num(r.totalBurned),
     totalSolRouted: num(r.totalSolRouted),
     solToBurn: num(r.solToBurn),
@@ -204,5 +217,6 @@ export function demoStats(): EngineStats {
     cycleIntervalMs: hour,
     capturedAt: new Date(last).toISOString(),
     holders: {},
+    coins: [],
   };
 }

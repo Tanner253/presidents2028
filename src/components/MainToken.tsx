@@ -3,7 +3,7 @@
 import { SITE } from "@/config/site";
 import { changeColor, fmtCompact, fmtDir, fmtNum, fmtSol, fmtUsd, timeAgo } from "@/lib/format";
 import { DEMO, MAIN_KEY } from "@/lib/market";
-import { ANY_LIVE, useMarket } from "@/lib/market-context";
+import { useMarket } from "@/lib/market-context";
 import { useNow } from "@/lib/useNow";
 import BurnCam from "./BurnCam";
 import BuyButton from "./BuyButton";
@@ -14,11 +14,12 @@ import SectionTitle from "./SectionTitle";
 import { Label, StatBlock, Wrap } from "./ui";
 
 export default function MainToken() {
-  const { markets, holders, stats, loaded } = useMarket();
+  const { markets, holders, stats, mints, loaded } = useMarket();
   const now = useNow();
   const m = markets[MAIN_KEY];
   const h = holders[MAIN_KEY];
-  const pre = !SITE.mainMint;
+  const mint = mints.main;
+  const pre = !mint;
   const burnedPct = stats ? (stats.totalBurned / SITE.totalSupply) * 100 : null;
   const routed = stats?.totalSolRouted ?? 0;
   const empty = pre ? "Soon" : loaded ? "—" : "";
@@ -39,7 +40,7 @@ export default function MainToken() {
       >
         <div className="mt-8 flex flex-col items-start gap-4">
           <BuyButton size="hero" />
-          <CopyAddress address={SITE.mainMint} />
+          <CopyAddress address={mint} />
         </div>
       </PageHero>
 
@@ -83,10 +84,10 @@ export default function MainToken() {
             <Label className="text-cream/80">Live chart</Label>
             <Label className="text-cream/50">via DexScreener</Label>
           </div>
-          {SITE.mainMint && !DEMO ? (
+          {mint && !DEMO ? (
             <iframe
               title={`$${SITE.ticker} price chart`}
-              src={`https://dexscreener.com/solana/${SITE.mainMint}?embed=1&theme=dark&trades=0&info=0`}
+              src={`https://dexscreener.com/solana/${mint}?embed=1&theme=dark&trades=0&info=0`}
               loading="lazy"
               referrerPolicy="no-referrer"
               className="h-[360px] w-full bg-ink sm:h-[480px]"
@@ -126,7 +127,7 @@ export default function MainToken() {
           }
         />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatBlock tone="gold" label="SOL routed" value={stats && routed > 0 ? fmtSol(routed) : ANY_LIVE ? "—" : "Soon"} valueClass="text-[clamp(20px,3vw,30px)]" />
+          <StatBlock tone="gold" label="SOL routed" value={stats && routed > 0 ? fmtSol(routed) : mints.any ? "—" : "Soon"} valueClass="text-[clamp(20px,3vw,30px)]" />
           <StatBlock tone="red" label="To buy & burn" value={stats && routed > 0 ? fmtSol(stats.solToBurn) : "—"} valueClass="text-[clamp(20px,3vw,30px)]" />
           <StatBlock label="To LP" value={stats && routed > 0 ? fmtSol(stats.solToLp) : "—"} valueClass="text-[clamp(20px,3vw,30px)]" />
           <StatBlock label="To marketing" value={stats && routed > 0 ? fmtSol(stats.solToMarketing) : "—"} valueClass="text-[clamp(20px,3vw,30px)]" />
