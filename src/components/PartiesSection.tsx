@@ -16,7 +16,7 @@ export default function PartiesSection() {
   return (
     <Wrap className="pt-16">
       <SectionTitle kicker="Pick a side" title="The Parties" />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {PARTY_COINS.map((c) => {
           const p = PARTIES[c.party];
           const m = markets[partyKey(c.id)];
@@ -35,10 +35,10 @@ export default function PartiesSection() {
               <div className="flex items-center gap-3 p-4">
                 {img && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={img} alt="" loading="lazy" className="h-14 w-14 shrink-0 border-[3px] border-ink object-cover" />
+                  <img src={img} alt="" className="h-14 w-14 shrink-0 border-[3px] border-ink object-cover" />
                 )}
                 <div className="min-w-0">
-                  <div className="truncate font-slab text-2xl uppercase leading-none [text-shadow:0_2px_0_rgba(0,0,0,0.45)]">{c.name}</div>
+                  <div className="font-slab text-xl uppercase leading-[0.95] [text-shadow:0_2px_0_rgba(0,0,0,0.45)] sm:text-2xl">{c.name}</div>
                   <span className="mt-2 inline-block border-2 border-gold bg-ink px-1.5 py-0.5 font-narrow text-[11px] font-bold uppercase tracking-[0.14em] text-gold">
                     ${c.ticker}
                   </span>
