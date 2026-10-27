@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { CANDIDATES, type Candidate } from "@/config/candidates";
 import { SITE } from "@/config/site";
+import { PARTY_COINS, partyKey } from "@/config/parties";
 import { CONFIG_MINTS, resolveMints, type Mints } from "./coins";
 import {
   DEMO,
@@ -49,7 +50,11 @@ const EMPTY: MarketState = {
 
 const Ctx = createContext<MarketState>(EMPTY);
 
-const entriesFor = (m: Mints) => [{ key: MAIN_KEY, mint: m.main }, ...CANDIDATES.map((c) => ({ key: c.id, mint: m.byId[c.id] ?? "" }))];
+const entriesFor = (m: Mints) => [
+  { key: MAIN_KEY, mint: m.main },
+  ...CANDIDATES.map((c) => ({ key: c.id, mint: m.byId[c.id] ?? "" })),
+  ...PARTY_COINS.map((p) => ({ key: partyKey(p.id), mint: p.mint })),
+];
 const ODDS_IDS = [
   ...CANDIDATES.flatMap((c) => (c.polymarketId ? [c.polymarketId] : [])),
   SITE.partyMarkets.R,
