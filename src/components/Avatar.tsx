@@ -39,7 +39,7 @@ export default function Avatar({
     >
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" loading="lazy" onError={() => setBroken(true)} className="h-full w-full object-cover object-[50%_18%]" />
+        <img src={src} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(true)} className="h-full w-full object-cover object-[50%_18%]" />
       ) : (
         initials(c.name)
       )}

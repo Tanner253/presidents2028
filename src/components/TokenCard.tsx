@@ -33,7 +33,7 @@ export default function TokenCard({
       <div className="relative min-h-0 flex-1" style={{ background: p.color }}>
         {photo && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" loading="lazy" className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-[50%_18%]" />
+          <img src={photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-[50%_18%]" />
         )}
         <div
           aria-hidden="true"

@@ -7,6 +7,7 @@ import { changeColor, fmtDir, fmtOdds, fmtOddsDelta, fmtPct, fmtUsdShort, fmtCom
 import { useCandidateRows, useMarket, type CandidateRow } from "@/lib/market-context";
 import Avatar from "./Avatar";
 import PageHero from "./PageHero";
+import PartiesSection from "./PartiesSection";
 import TokenCard from "./TokenCard";
 import { Segmented, StatBlock, Wrap } from "./ui";
 
@@ -113,6 +114,8 @@ export default function CandidatesView() {
           </a>
         </p>
       </Wrap>
+
+      <PartiesSection />
     </>
   );
 }
