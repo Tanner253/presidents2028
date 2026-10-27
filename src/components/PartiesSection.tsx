@@ -35,7 +35,7 @@ export default function PartiesSection() {
               <div className="flex items-center gap-3 p-4">
                 {img && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={img} alt="" className="h-14 w-14 shrink-0 border-[3px] border-ink object-cover" />
+                  <img src={img} alt="" referrerPolicy="no-referrer" className="h-14 w-14 shrink-0 border-[3px] border-ink object-cover" />
                 )}
                 <div className="min-w-0">
                   <div className="font-slab text-xl uppercase leading-[0.95] [text-shadow:0_2px_0_rgba(0,0,0,0.45)] sm:text-2xl">{c.name}</div>
