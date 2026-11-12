@@ -57,6 +57,7 @@ export const CANDIDATES: Candidate[] = [
   { id: "emanuel", name: "Rahm Emanuel", ticker: "RAHM", party: "D", mint: "", status: "undeclared", polymarketId: "561282" },
   { id: "trump-jr", name: "Donald Trump Jr.", ticker: "DONJR", party: "R", mint: "", status: "undeclared", polymarketId: "561244" },
   { id: "musk", name: "Elon Musk", ticker: "MUSK", party: "I", mint: "3z87rAr4dr3Ckf9mmEmGsCHiSqV11ovsD28pPf7apump", status: "undeclared", polymarketId: "561250", image: "https://m.rapidlaunch.io/images/rNfoFO5pg.jpg" },
+  { id: "mcentee", name: "John McEntee", ticker: "MCENTEE", party: "R", mint: "EBwGNk8ERwfEmRZTVZsTiitknKdfZQjqtsE7QFvDpump", status: "undeclared", image: "https://axiomtrading.sfo3.cdn.digitaloceanspaces.com/DmTPEzzKvoJAW1njMhgGK3qEnTouyfxa7xusZZnpump.webp" },
 ];
 
 // Still in the race (undeclared names count until they rule themselves out).
