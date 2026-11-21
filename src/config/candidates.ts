@@ -42,7 +42,7 @@ export const CANDIDATES: Candidate[] = [
   { id: "buttigieg", name: "Pete Buttigieg", ticker: "PETE", party: "D", mint: "", status: "undeclared", polymarketId: "561232" },
   { id: "desantis", name: "Ron DeSantis", ticker: "DESANTIS", party: "R", mint: "", status: "undeclared", polymarketId: "561246" },
   { id: "beshear", name: "Andy Beshear", ticker: "BESHEAR", party: "D", mint: "", status: "undeclared", polymarketId: "561237" },
-  { id: "talarico", name: "James Talarico", ticker: "TALARICO", party: "D", mint: "", status: "undeclared", polymarketId: "561262" },
+  { id: "talarico", name: "James Talarico", ticker: "TALARICO", party: "D", mint: "bsh8YvWySaG9nKRBhsh1WWn68Y3DxzWWKQhXWZCpump", status: "undeclared", polymarketId: "561262" },
   { id: "the-rock", name: "Dwayne “The Rock” Johnson", ticker: "ROCK", party: "I", mint: "", status: "undeclared", polymarketId: "561252" },
   { id: "carlson", name: "Tucker Carlson", ticker: "TUCKER", party: "R", mint: "", status: "undeclared", polymarketId: "561253" },
   { id: "trump", name: "Donald Trump", ticker: "TRUMP", party: "R", mint: "", status: "undeclared", polymarketId: "561243" },
